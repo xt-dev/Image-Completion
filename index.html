@@ -151,17 +151,21 @@
 
 		<p> We iterate the following process on each selected images: </p>
 
+		<h3> Setup input image  </h3>
+
+		When the program start, we can manually select the area to "erase", or input the incomplete image and its mask. 
+
 		<h3> Cut Seam Finding </h3>
 
-		<p> To simplify the process and better adapt the code from <b>Project 2</b>, we first find the smallest rectangle containing the inrregular hole, as well as a bigger rectangle. We regard the difference between these two rectangles (the width of the border is <code>80</code> in our case) as local context, i.e., the overlapping region of the existing and sampled patch. </p>
+		<p> To find the minimum cost path around the irregular border, we first find the smallest rectangle containing the inrregular hole, then add 80 to each four borders to get a larger rectangle as well and minus 80 to each borders to get a smaller rectangles. We regard the difference between the large and small rectangles (the width of the border is <code>160</code> in our case) as local context, i.e., the overlapping region of the existing and sampled patch. </p>
 
-		<p> Take the top <code>80 * width</code> region as example. We use <code>buildErrpatch</code> for <b>Project 2</b>, but use it on <code>L*a*b</code> color space, to compute the distance based on square difference between pixels in R, G, B layers. Then, we use <code>cut.m</code> provided to find the minimum cost math from the left to the right side of the patch, which defines a binary mask for the whole local context region. </p>
+		<p> Take the top <code>160 * width</code> region as example. We use the idea of <code>buildErrpatch</code> in <b>Project 2</b>, but add some modifications to satisfy the need of irregular shape. First, we calculate the SSD of two images on <code>L*a*b</code> color space instead of RGB color space. Since the region we need to cut contains part of holes, we changed the overlap region of hole and cut to <code>Inf</code> so that it won't be marked as cut edge. Then, we use <code>cut.m</code> to find the minimum cost path from the left to the right side of the patch, which defines a binary mask for the whole local context region. </p>
 
 		<p> Rather than repeating process above once, we use it for four edges (top, bottom, left, right). Note that to find the cut for left and right region, we need to transpose the region first so that we can find the cutting path from top to the bottom side in the original region. We store the mininim cost for each time, and let the sum to be the total cost. Find the intersection of four masks. </p>
 
 		<h3> Poisson Blending </h3>
 
-		<p> After we get the mask, we use the standard <code>poissonBlend</code> in <b>Project 3</b> on the whole image region to compose the image. </p>
+		<p> After we get the mask, we use the standard <code>poissonBlend</code> inspired by <b>Project 3</b> on the whole image region to compose the image. </p>
 
 		<p> Note that different from <b>Project 3</b> which allows the user to select mask region, our mask is computed by the cut, so there might be isolated pixels or regions with wierd border. Since Poission Blending is based on neighboring regions, before outputing mask in the process above, we smooth the mask a little bit. </p>
 
