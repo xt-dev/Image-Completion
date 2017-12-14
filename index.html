@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title> Image Completion | CS445 Final Project </title>
+	<meta charset="utf-8">
+	<style>
+		* {
+			clear: both;
+			font-family: "Avenir Next", "Verdana", Sans-serif;
+			font-weight: 400;
+			line-height: 1.5em;
+			color: #333;
+		}
+		body {
+			margin: 0px;
+			background-color: #fcfcfc;
+		}
+		b {
+			font-weight: 600;
+		}
+		img {
+			max-width: 100%;
+			max-height: 300px;
+			display: block;
+		}
+		img:hover {
+			opacity: 0.5;
+		}
+		figure {
+			float: left;
+			clear: none;
+			margin: 5px;
+			background-color: #f9f9f9;
+		}
+		figcaption {
+			text-align: center;
+			font-size: .8em;
+		}
+		code {
+			background-color: #eee;
+			padding: 0 3px;
+			border-radius: 3px;
+			font-size: .9em;
+		}
+		.figureclass {
+			clear: both;
+			display: block;
+			margin: 10px;
+		}
+		a {
+			color: black;
+		}
+		iframe {
+			display: block;
+			margin: auto;
+		}
+		header {
+			margin: 0px;
+			padding: 0px;
+		}
+		/* The navigation bar */
+		.navbar {
+			background-color: #333;
+			position: fixed;
+			/* Set the navbar to fixed position */
+			top: 0;
+			/* Position the navbar at the top of the page */
+			width: 100vw;
+			/* Full width */
+			margin: 0px;
+		}
+		/* Links inside the navbar */
+		.navbar a {
+			color: #fcfcfc;
+			float: left;
+			display: block;
+			padding: 14px 8px;
+			text-decoration: none;
+			font-weight: 200;
+		}
+		.navbar a:hover {
+			background-color: #999;
+		}
+		.navbar ul {
+			display: flex;
+			align-items: stretch;
+			/* Default */
+			justify-content: space-between;
+			width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		.navbar li {
+			text-align: center;
+			display: block;
+			flex: 0 1 auto;
+			/* Default */
+			list-style-type: none;
+			font-size: 1vw;
+		}
+		/* Main content */
+		.main {
+			display: block;
+			max-width: 90%;
+			width: 960px;
+			margin: 10vh auto;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<div class="navbar">
+			<ul>
+				<li> <a href="#0">Image Completion</a> </li>
+				<li> <a href="#1">OVERVIEW</a> </li>
+				<li> <a href="#2">DATABASE SETUP</a> </li>
+				<li> <a href="#3">SEMANTIC SCENE MATCHING</a> </li>
+				<li> <a href="#4">LOCAL CONTEXT MATCHING</a> </li>
+				<li> <a href="#5">RESULT</a> </li>
+				<li> <a href="#6">REFERENCE</a> </li>
+			</ul>
+		</div>
+	</header>
+
+	<div class="main" id="0">
+
+		<h1 align='center'> CS 445 Final Project Image Completion </h1>
+
+		<p style="text-align:center"> Group Member: Xilun Jin (xjin12), Xin Wen (xinwen5), Xintong Wu (xwu68), Qile Zhi (qilezhi2) </p>
+
+		<h2 id="1"> OVERVIEW </h2>
+
+		<p> Our project is based on Hays et al. 2008 paper <a href="http://graphics.cs.cmu.edu/projects/scene-completion/" target="_blank">Scene Completion Using Millions of Photographs</a>. We will set up a large image database, and our program will be able to patch up the holes of an input image with images both structurally and semantically similar. </p>
+
+		<h2 id="2"> DATABASE SETUP </h2>
+
+		~
+
+		<p> After setting up a large image database. our program will first select best semantically matching scenes and perform traditional template matching. </p>
+
+		<h2 id="3"> SEMANTIC SCENE MATCHING </h2>
+
+		~
+
+		<h2 id="4"> LOCAL CONTEXT MATCHING </h2>
+
+		<p> We now have 20 semantically nearest scenes, and we can use our local template matching to find the best matchings. We further divide the steps into two: Seam Finding and Poisson Blending, inspired by previous <b>Project 2</b> and <b>Project 3</b>. </p>
+
+		<p> We iterate the following process on each selected images: </p>
+
+		<h3> Cut Seam Finding </h3>
+
+		<p> To simplify the process and better adapt the code from <b>Project 2</b>, we first find the smallest rectangle containing the inrregular hole, as well as a bigger rectangle. We regard the difference between these two rectangles (the width of the border is <code>80</code> in our case) as local context, i.e., the overlapping region of the existing and sampled patch. </p>
+
+		<p> Take the top <code>80 * width</code> region as example. We use <code>buildErrpatch</code> for <b>Project 2</b>, but use it on <code>L*a*b</code> color space, to compute the distance based on square difference between pixels in R, G, B layers. Then, we use <code>cut.m</code> provided to find the minimum cost math from the left to the right side of the patch, which defines a binary mask for the whole local context region. </p>
+
+		<p> Rather than repeating process above once, we use it for four edges (top, bottom, left, right). Note that to find the cut for left and right region, we need to transpose the region first so that we can find the cutting path from top to the bottom side in the original region. We store the mininim cost for each time, and let the sum to be the total cost. Find the intersection of four masks. </p>
+
+		<h3> Poisson Blending </h3>
+
+		<p> After we get the mask, we use the standard <code>poissonBlend</code> in <b>Project 3</b> on the whole image region to compose the image. </p>
+
+		<p> Note that different from <b>Project 3</b> which allows the user to select mask region, our mask is computed by the cut, so there might be isolated pixels or regions with wierd border. Since Poission Blending is based on neighboring regions, before outputing mask in the process above, we smooth the mask a little bit. </p>
+
+		<p> After writing 20 output images and storing costs, we select the top 5 matches and output the indices as well as costs. </p>
+
+		<h2 id="5"> RESULT </h2>
+
+		~
+
+		<h2 id="6"> REFERENCE </h2>
+
+		<p> James Hays, Alexei A. Efros. Scene Completion Using Millions of Photographs. ACM Transactions on Graphics (SIGGRAPH 2007). August 2007, vol. 26, No. 3. </p>
+
+</body>
+
+</html>
