@@ -26,21 +26,36 @@ function local_matching_single(target)
 	% plot(jj, ii, 'b-', 'LineWidth', 1);
 
 	%% add for loop here
-	im = im2double(imread('2.jpg')); % choose top 20 semantic matching images
+	score_list = zeros(4, 1);
+	for i = 1:6 % change 6 to 20 !!
+		
+		im = im2double(imread(sprintf('../test_img/before_%d.jpg',i))); % choose top 20 semantic matching images
 
-	%% find mask
-	patch = target(top:bottom, left:right, :);
-	sample = im(top:bottom, left:right, :);
-	[mask, score] = find_mask(patch, sample, bdtop, bdbottom, bdleft, bdright);
+		%% find mask
+		patch = target(top:bottom, left:right, :);
+		sample = im(top:bottom, left:right, :);
+		[mask, score] = find_mask(patch, sample, bdtop, bdbottom, bdleft, bdright);
 
-	%% blending
-	mask_s = zeros(h, w, 3); % same size as background
-	mask_s(top:bottom, left:right, :) = mask;
-	im_s = zeros(h, w, 3); % same size as background
-	im_s(top:bottom, left:right, :) = sample;
-	poisson = poissonBlend(im_s, mask_s, target);
-	figure
-	imshow(poisson);
-	disp(score); % sum of 4 cut cost
+		%% blending
+		mask_s = zeros(h, w, 3); % same size as background
+		mask_s(top:bottom, left:right, :) = mask;
+		im_s = zeros(h, w, 3); % same size as background
+		im_s(top:bottom, left:right, :) = sample;
+		poisson = poissonBlend(im_s, mask_s, target);
+		% figure
+		% imshow(poisson);
+		imwrite(poisson, sprintf('../test_img/after_%d.jpg',i));
+		% NO [index] with cost [cost]
+		score_list(i) = score; % sum of 4 cut cost	
+		fprintf('NO %d with cost %f\n', i, score);  	
+	end
+	
+	% find min5
+	sorted = sort(score_list);
+	for i = 1:3 % best 5
+		idx = find(score_list == sorted(i));
+		% BEST [rank]: [index] with cost [cost]
+		fprintf('BEST %d: %d with cost %f\n', i, idx, score_list(idx));
+	end
 
 end
