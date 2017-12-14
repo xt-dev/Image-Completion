@@ -7,7 +7,7 @@ function local_matching_single(loc, withmask)
 	if withmask == false
 		% get mask
 		objmask = getMask(target);
-		imwrite(objmask, 'mask.jpg');
+		imwrite(objmask, sprintf('%s/mask.jpg', loc));
 		objmask = cat(3, objmask, objmask, objmask);
 	else
 		objmask = im2double(imread('mask.jpg'));
@@ -17,15 +17,27 @@ function local_matching_single(loc, withmask)
 	[h, w, k] = size(target);
 	[h1, w1, h2, w2] = find_rect(target);
 
-	border = 100;
+	border = 80;
 	top = max(1, h1 - border); % overflow
 	bottom = min(h, h2 + border); 
 	left = max(1, w1 - border); 
 	right = min(w, w2 + border);
-	bdtop = min(border, h1 - 1); % valid cut region
+	bdtop = min(border, h1);
 	bdbottom = min(border, h - h2);
-	bdleft = min(border, w1 - 1);
+	bdleft = min(border, w1);
 	bdright = min(border, w - w2);
+	if sum(sum(sum(~objmask(h1, w1:w2, :)))) > 20
+		bdtop = bdtop + min(border, (h2 - h1) / 2); % valid cut region
+	end
+	if sum(sum(sum(~objmask(h2, w1:w2, :)))) > 20
+		bdbottom = bdbottom + min(border, (h2 - h1) / 2); % valid cut region
+	end
+	if sum(sum(sum(~objmask(h1:h2, w1, :)))) > 20
+		bdleft = bdleft + min(border, (w2 - w1) / 2); % valid cut region
+	end
+	if sum(sum(sum(~objmask(h1:h2, w2, :)))) > 20
+		bdright = bdright + min(border, (w2 - w1) / 2); % valid cut region
+	end
 
 	%% to show rectangle (debug)
 	% figure
@@ -52,9 +64,11 @@ function local_matching_single(loc, withmask)
 	fclose(fid);
 	
 	%% add for loop here
-	score_list = zeros(20, 1);
+	score_list = zeros(19, 1);
 	dinfo = dir(sprintf('%s/20*.jpg', loc));
 	c1 = containers.Map;
+	objmask_new = objmask(top:bottom, left:right, :);
+	patch = target(top:bottom, left:right, :);
 	for i = 1:length(dinfo)
 		
 		thisfilename = dinfo(i).name;
@@ -63,9 +77,8 @@ function local_matching_single(loc, withmask)
 		im = im2double(imread(thisfilename)); % choose top 20 semantic matching images
 		
 		%% find mask
-		patch = target(top:bottom, left:right, :);
 		sample = im(top:bottom, left:right, :);
-		[mask, cutcost] = find_mask(patch, sample, bdtop, bdbottom, bdleft, bdright);
+		[mask, cutcost] = find_mask(patch, sample, objmask_new, bdtop, bdbottom, bdleft, bdright);
 
 		%% blending
 		mask_s = zeros(h, w, 3); % same size as background
@@ -77,16 +90,16 @@ function local_matching_single(loc, withmask)
 		% imshow(poisson);
 		imwrite(poisson, sprintf('%s/after%d.jpg', loc, i));
 		% NO [index] with cost [cost];
-		score_list(i) = cutcost * 10^(-6) + blendcost * 10^(-1) + 2*c(thisfilename); % sum of 4 cut cost	
+		score_list(i) = cutcost * 10^(-2) + blendcost * 10^(-1) + 2*c(thisfilename); % sum of 4 cut cost	
 		fprintf('No. %d %s with cost %f\n', i, thisfilename, score_list(i));  	
 	end
 	
 	% find min5
-	sorted = sort(score_list);
-	for i = 1:5 % best 5
-		idx = find(score_list == sorted(i));
-		% BEST [rank]: [index] with cost [cost]
-		fprintf('BEST %d: no. %d %s with cost %f\n', i, idx, c1(int2str(idx)), score_list(idx));
-	end
+% 	sorted = sort(score_list);
+% 	for i = 1:5 % best 5
+% 		idx = find(score_list == sorted(i));
+% 		% BEST [rank]: [index] with cost [cost]
+% 		fprintf('BEST %d: no. %d %s with cost %f\n', i, idx, c1(int2str(idx)), score_list(idx));
+% 	end
 
 end

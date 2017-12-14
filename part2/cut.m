@@ -40,5 +40,5 @@ for x = numel(bestpath):-1:2
 end
 mask = ~mask;
 
-mincost = min(cost(:, end)); % ADD
+mincost = min(cost(:, end)) / w; % ADD
 
