@@ -1,29 +1,9 @@
-% inpainting.m
-% 
-% The MATLAB implementation of inpainting algorithm by A. Criminisi (2004)
-%
-% Inputs: 
-%   - origImg        original image or corrupted image
-%   - mask           implies target region (1 denotes target region) 
-%   - psz:           patch size (odd scalar). If psz=5, patch size is 5x5.
-%
-% Outputs:
-%   - inpaintedImg   The inpainted image; an MxNx3 matrix of doubles. 
-%   - C              MxN matrix of confidence values accumulated over all iterations.
-%   - D              MxN matrix of data term values accumulated over all iterations.
-%   - fillMovie      A Matlab movie struct depicting the fill region over time. 
-%
-% Example:
-%   [i1,c,d,mov] = inpaint();
-%   plotall;           % quick and dirty plotting script
-%   close; movie(mov); % grab some popcorn 
-%
 function [inpaintedImg,C,D,fillMovie] = inpainting(origImg,mask,psz)
 
 %% error check
-if ~ismatrix(mask); error('Invalid mask'); end
-if sum(sum(mask~=0 & mask~=1))>0; error('Invalid mask'); end
-if mod(psz,2)==0; error('Patch size psz must be odd.'); end
+% if ~ismatrix(mask); error('Invalid mask'); end
+% if sum(sum(mask~=0 & mask~=1))>0; error('Invalid mask'); end
+% if mod(psz,2)==0; error('Patch size psz must be odd.'); end
 
 fillRegion = mask;
 
@@ -70,7 +50,7 @@ while any(fillRegion(:))
   % Compute confidences along the fill front
   for k=dR'
     Hp = getpatch(sz,k,psz);
-    q = Hp(~(fillRegion(Hp))); % fillRegionの中でパッチの部分だけ取り出して、
+    q = Hp(~(fillRegion(Hp))); % fillRegion?????????????????
     C(k) = sum(C(q))/numel(Hp);
   end
   
@@ -111,49 +91,3 @@ while any(fillRegion(:))
 end
 
 inpaintedImg = img;
-
-
-%---------------------------------------------------------------------
-% Scans over the entire image (with a sliding window)
-% for the exemplar with the lowest error. Calls a MEX function.
-%---------------------------------------------------------------------
-function Hq = bestexemplar(img,Ip,toFill,sourceRegion)
-m=size(Ip,1); mm=size(img,1); n=size(Ip,2); nn=size(img,2);
-best = bestexemplarhelper(mm,nn,m,n,img,Ip,toFill,sourceRegion);
-Hq = sub2ndx(best(1):best(2),(best(3):best(4))',mm);
-
-
-%---------------------------------------------------------------------
-% Returns the indices for a 9x9 patch centered at pixel p.
-%---------------------------------------------------------------------
-function [Hp,rows,cols] = getpatch(sz,p,psz)
-% [x,y] = ind2sub(sz,p);  % 2*w+1 == the patch size
-w=(psz-1)/2; p=p-1; y=floor(p/sz(1))+1; p=rem(p,sz(1)); x=floor(p)+1;
-rows = max(x-w,1):min(x+w,sz(1));
-cols = (max(y-w,1):min(y+w,sz(2)))';
-Hp = sub2ndx(rows,cols,sz(1));
-
-%---------------------------------------------------------------------
-% Converts the (rows,cols) subscript-style indices to Matlab index-style
-% indices.  Unforunately, 'sub2ind' cannot be used for this.
-%---------------------------------------------------------------------
-function N = sub2ndx(rows,cols,nTotalRows)
-X = rows(ones(length(cols),1),:);
-Y = cols(:,ones(1,length(rows)));
-N = X+(Y-1)*nTotalRows;
-
-
-%---------------------------------------------------------------------
-% Converts an indexed image into an RGB image, using 'img' as a colormap
-%---------------------------------------------------------------------
-function img2 = ind2img(ind,img)
-for i=3:-1:1, temp=img(:,:,i); img2(:,:,i)=temp(ind); end;
-
-
-%---------------------------------------------------------------------
-% Converts an RGB image into a indexed image, using the image itself as
-% the colormap.
-%---------------------------------------------------------------------
-function ind = img2ind(img)
-s=size(img); ind=reshape(1:s(1)*s(2),s(1),s(2));
-
