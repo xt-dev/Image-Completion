@@ -45,6 +45,11 @@ function [mask, score] = find_mask(patch, sample, bdtop, bdbottom, bdleft, bdrig
 	end
 	
 	mask = cat(3, mask, mask, mask);
-% 	score
+	
+	%% local cost
+	disp(score);
+	imshow(buildErrpatch(patch, sample) 
+	disp(sum(sum(buildErrpatch(patch, sample) .* )));
+% 	score = score + 
 
 end

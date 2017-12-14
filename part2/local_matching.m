@@ -1,10 +1,9 @@
 function local_matching(~)
 
 	% starter code for local context matching
-	
 	close all
-	
-	im = im2double(imread('../1.jpg'));
-	local_matching_single(im);
+
+% 	local_matching_single('../gist_res/input', false);
+	local_matching_single('../gist_res/test2', true);
 
 end

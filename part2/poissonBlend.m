@@ -1,4 +1,4 @@
-function im = poissonBlend(im_s, mask_s, im_background)
+function [im, cost] = poissonBlend(im_s, mask_s, im_background)
 
 	[imh, imw, nb] = size(im_background);
 	im2var = zeros(imh, imw); % as map
@@ -20,9 +20,13 @@ function im = poissonBlend(im_s, mask_s, im_background)
 		end
 	end
 
-	v1 = poissonBlendOneDim(im_s(:,:,1), mask_s, im_background(:,:,1), miny, maxy, minx, maxx, im2var);
-	v2 = poissonBlendOneDim(im_s(:,:,2), mask_s, im_background(:,:,2), miny, maxy, minx, maxx, im2var);
-	v3 = poissonBlendOneDim(im_s(:,:,3), mask_s, im_background(:,:,3), miny, maxy, minx, maxx, im2var);
+	cost = 0;
+	[v1, res] = poissonBlendOneDim(im_s(:,:,1), mask_s, im_background(:,:,1), miny, maxy, minx, maxx, im2var);
+	cost = cost + res;
+	[v2, res] = poissonBlendOneDim(im_s(:,:,2), mask_s, im_background(:,:,2), miny, maxy, minx, maxx, im2var);
+	cost = cost + res;
+	[v3, res] = poissonBlendOneDim(im_s(:,:,3), mask_s, im_background(:,:,3), miny, maxy, minx, maxx, im2var);
+	cost = cost + res;
 
 	im = im_background;
 	im_bf = im_background;

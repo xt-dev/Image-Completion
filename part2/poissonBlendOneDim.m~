@@ -71,5 +71,5 @@ function [v, res] = poissonBlendOneDim(im_s, mask_s, im_background, miny, maxy, 
 	end
 	A = sparse(Ai, Aj, Ak);
 	v = A\b;
-	res = sum((A * v - b) .^ 2);
+	res = sum(A * v - b)
 end

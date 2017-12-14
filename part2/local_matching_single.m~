@@ -57,6 +57,10 @@ function local_matching_single(loc, withmask)
 	c1 = containers.Map;
 	for i = 1:length(dinfo)
 		
+		if i == 7
+			break
+		end
+		
 		thisfilename = dinfo(i).name;
 		c1(int2str(i)) = thisfilename;
 		
@@ -77,7 +81,10 @@ function local_matching_single(loc, withmask)
 		% imshow(poisson);
 		imwrite(poisson, sprintf('%s/after%d.jpg', loc, i));
 		% NO [index] with cost [cost];
-		score_list(i) = cutcost * 10^(-6) + blendcost * 10^(-1) + 2*c(thisfilename); % sum of 4 cut cost	
+		disp(cutcost * 10^(-6));
+		disp(2*c(thisfilename));
+		disp(blendcost);
+		score_list(i) = cutcost + blendcost + 2*c(thisfilename); % sum of 4 cut cost	
 		fprintf('No. %d %s with cost %f\n', i, thisfilename, score_list(i));  	
 	end
 	
