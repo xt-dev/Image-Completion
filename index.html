@@ -150,7 +150,7 @@
 	<div class="main" id="0">
 
 		<h1 align='center' style="font-size:40px;padding-top:20px"> Scene Completion With Large-scale Image Data Set </h1>
-		<h1 align='center' style="font-size:30px"> CS 445 Final Project Image Completion </h1>
+		<h1 align='center' style="font-size:30px"> CS 445 Final Project</h1>
 
 		<p style="text-align:center"> Author: Xilun Jin (xjin12), Xin Wen (xinwen5), Xintong Wu (xwu68), Qile Zhi (qilezhi2) </p>
 
@@ -223,13 +223,17 @@
 
 		<p> We iterate the following process on each selected images: </p>
 
-		<h3> Setup Input Mmage </h3>
+		<h3> Setup Input Image </h3>
 
 		When the program start, we can manually select the area to "erase", or input the incomplete image and its mask.
 
 		<h3> Cut Seam Finding </h3>
 
 		<p> To find the minimum cost path around the irregular border, we first find the smallest rectangle containing the inrregular hole, then add 80 to each four borders to get a larger rectangle as well and minus 80 to each borders to get a smaller rectangles. We regard the difference between the large and small rectangles (the width of the border is <code>160</code> in our case) as local context, i.e., the overlapping region of the existing and sampled patch. </p>
+
+		<b>Example of graph cut region</b><br>
+		<img src="Data/border.png" alt="example"/>
+		<p>Note the blue rectangle is the smallest rectangle containing the inrregular hole. Our graph cut is performed between yellow rectangle and orange rectangle.</p>
 
 		<p> Take the top <code>160 * width</code> region as example. We use the idea of <code>buildErrpatch</code> in <b>Project 2</b>, but add some modifications to satisfy the need of irregular shape. First, we calculate the SSD of two images on <code>L*a*b</code> color space instead of RGB color space. Since the region we need to cut contains part of holes, we changed the overlap region of hole and cut to <code>Inf</code> so that it won't be marked as cut edge. Then, we use <code>cut</code> to find the minimum cost path from the left to the right side of the patch, which defines a binary mask for the whole local context region. </p>
 
@@ -241,9 +245,17 @@
 
 		<p> Note that different from <b>Project 3</b> which allows the user to select mask region, our mask is computed by the cut, so there might be isolated pixels or regions with wierd border. Since Poission Blending is based on neighboring regions, before outputing mask in the process above, we smooth the mask a little bit. </p>
 
-		<p> We use the Poisson Blending formula to solve the blending constraints: <img src="./poissonblend_eq.png" alt="poisson blend equation"/></p>
+		<p> We use the Poisson Blending formula to solve the blending constraints: <img src="./poissonblend_eq.png" alt="poisson blend equation"/></p><br>
 
-		<p> After writing 20 output images and storing costs, we select the top 5 matches. </p>
+		
+		<h3> Calculate Costs and Ranks </h3>
+		<p> To calculate costs, we add up three scores: GIST distance, graph cut cost and Poisson blending cost. After writing 20 output images, storing costs and ranking from smallest to largest, we select the top 5 matches.</p>
+
+		<b> Sample Output </b> <br>
+		No. 1 2005_10_13_31.jpg: <br>
+		gistdist=0.072752<br>
+		cutcost=8.921728 <br>
+		blendcost=1.555726<br>
 
 		<h2 id="5" style="padding-top:20px"> RESULT </h2>
 
