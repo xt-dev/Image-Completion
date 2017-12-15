@@ -16,7 +16,6 @@ function local_matching_single(loc, withmask)
 		end
 	end
 	target = target .* ~objmask;
-	imshow(target);
 
 	[h, w, k] = size(target);
 	[h1, w1, h2, w2] = find_rect(target);
@@ -48,18 +47,17 @@ function local_matching_single(loc, withmask)
 	function plot_rec(x1, y1, x2, y2)
 		ii = [x1, x1, x2, x2, x1];
 		jj = [y1, y2, y2, y1, y1];
-		plot(jj, ii, 'LineWidth', 2);
+		plot(jj, ii, 'LineWidth', 1);
 	end
 
-% 	h = figure
-% 	imshow(target)
-% 	hold on
-% 	plot_rec(h1, w1, h2, w2)
-% 	hold on
-% 	plot_rec(top, left, bottom, right)
-% 	hold on
-% 	plot_rec(top+bdtop, left+bdleft, bottom-bdbottom, right-bdright)
-% 	saveas(h, sprintf('%s/border.png', loc));
+	figure
+	imshow(target)
+	hold on
+	plot_rec(h1, w1, h2, w2)
+	hold on
+	plot_rec(top, left, bottom, right)
+	hold on
+	plot_rec(top+bdtop, left+bdleft, bottom-bdbottom, right-bdright)
 
 	%% build map
 	
@@ -74,12 +72,11 @@ function local_matching_single(loc, withmask)
 	fclose(fid);
 	
 	%% add for loop here
-% 	score_list = zeros(19, 1);
+	score_list = zeros(19, 1);
 	dinfo = dir(sprintf('%s/20*.jpg', loc));
 	c1 = containers.Map;
 	objmask_new = objmask(top:bottom, left:right, :);
 	patch = target(top:bottom, left:right, :);
-	fid = fopen('data.txt','wt');
 	for i = 1:length(dinfo)
 		
 		thisfilename = dinfo(i).name;
@@ -90,22 +87,20 @@ function local_matching_single(loc, withmask)
 		%% find mask
 		sample = im(top:bottom, left:right, :);
 		[mask, cutcost] = find_mask(patch, sample, objmask_new, bdtop, bdbottom, bdleft, bdright);
-		
+
 		%% blending
 		mask_s = zeros(h, w, 3); % same size as background
 		mask_s(top:bottom, left:right, :) = mask;
 		im_s = zeros(h, w, 3); % same size as background
 		im_s(top:bottom, left:right, :) = sample;
 		[poisson, blendcost] = poissonBlend(im_s, mask_s, target);
-% 		figure
-% 		imshow(poisson);
-% 		imwrite(poisson, sprintf('%s/after%d.jpg', loc, i));
+		% figure
+		% imshow(poisson);
+		imwrite(poisson, sprintf('%s/after%d.jpg', loc, i));
 		% NO [index] with cost [cost];
-		fprintf(fid, 'No. %d %s: gistdist=%f\n cutcost=%f blendcost=%f\n', i, thisfilename, c(thisfilename), cutcost, blendcost);
-% 		score_list(i) = cutcost * 10^(-2) + blendcost * 10^(-1) + 2*c(thisfilename); % sum of 4 cut cost	
-% 		fprintf('No. %d %s with cost %f\n', i, thisfilename, score_list(i));  	
+		score_list(i) = cutcost * 10^(-2) + blendcost * 10^(-1) + 2*c(thisfilename); % sum of 4 cut cost	
+		fprintf('No. %d %s with cost %f\n', i, thisfilename, score_list(i));  	
 	end
-	fclose(fid);
 	
 	% find min5
 % 	sorted = sort(score_list);

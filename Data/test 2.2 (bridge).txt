@@ -1,0 +1,38 @@
+No. 1 2005_10_13_31.jpg: gistdist=0.072752
+ cutcost=8.921728 blendcost=1.555726
+No. 2 2005_10_3_33.jpg: gistdist=0.056394
+ cutcost=140.355418 blendcost=8.606997
+No. 3 2005_11_14_38.jpg: gistdist=0.039884
+ cutcost=35.207486 blendcost=3.811644
+No. 4 2005_11_38_49.jpg: gistdist=0.085163
+ cutcost=7.682632 blendcost=2.521401
+No. 5 2005_1_4_33.jpg: gistdist=0.092792
+ cutcost=356.132497 blendcost=6.827347
+No. 6 2005_2_27_25.jpg: gistdist=0.069470
+ cutcost=157.657891 blendcost=4.571738
+No. 7 2005_3_16_10.jpg: gistdist=0.091226
+ cutcost=56.459217 blendcost=4.222724
+No. 8 2005_3_37_6.jpg: gistdist=0.076591
+ cutcost=150.013425 blendcost=0.514910
+No. 9 2005_4_8_11.jpg: gistdist=0.078203
+ cutcost=10.475466 blendcost=4.465587
+No. 10 2005_5_37_38.jpg: gistdist=0.078721
+ cutcost=1.136867 blendcost=0.682504
+No. 11 2005_6_16_19.jpg: gistdist=0.085593
+ cutcost=28.183280 blendcost=6.593004
+No. 12 2005_6_33_16.jpg: gistdist=0.088848
+ cutcost=39.423980 blendcost=3.092420
+No. 13 2005_7_10_31.jpg: gistdist=0.091358
+ cutcost=33.686095 blendcost=1.233661
+No. 14 2005_7_10_36.jpg: gistdist=0.060379
+ cutcost=115.391866 blendcost=7.395070
+No. 15 2005_7_12_2.jpg: gistdist=0.081114
+ cutcost=16.108675 blendcost=0.325041
+No. 16 2005_7_1_15.jpg: gistdist=0.087773
+ cutcost=141.410585 blendcost=1.570671
+No. 17 2005_7_2_20.jpg: gistdist=0.077050
+ cutcost=188.328821 blendcost=2.507097
+No. 18 2005_8_19_13.jpg: gistdist=0.065265
+ cutcost=11.568865 blendcost=2.526149
+No. 19 2005_8_2_55.jpg: gistdist=0.059724
+ cutcost=42.343162 blendcost=0.698962

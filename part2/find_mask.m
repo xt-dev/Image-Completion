@@ -37,7 +37,7 @@ function [mask, score] = find_mask(patch, sample, objmask, bdtop, bdbottom, bdle
 	[curr, cost] = cut(errpatch);
 	if cost < 300
 		score = score + cost;
-		mask3 = [curr; ones(patchh - bdtop, patchw)];
+		mask3 = [curr; ones(patchh - size(curr, 1), patchw)];
 	else
 		mask3 = ones(patchh, patchw);
 	end
@@ -50,7 +50,7 @@ function [mask, score] = find_mask(patch, sample, objmask, bdtop, bdbottom, bdle
 	[curr, cost] = cut(errpatch);
 	if cost < 300
 		score = score + cost;
-		mask4 = [ones(patchh - bdbottom, patchw); ~curr];
+		mask4 = [ones(patchh - size(curr, 1), patchw); ~curr];
 	else
 		mask4 = ones(patchh, patchw);
 	end

@@ -5,7 +5,7 @@ function local_matching(~)
 
 % 	local_matching_single('../gist_res/test2', true);
 % 	local_matching_single('../gist_res/test1', false);
-% 	local_matching_single('../gist_res/test1 copy', false);
-	local_matching_single('../gist_res/test3', true);
+	local_matching_single('../gist_res/test1 copy', true);
+% 	local_matching_single('../gist_res/test3', true);
 
 end
