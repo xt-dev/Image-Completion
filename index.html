@@ -167,11 +167,11 @@
 
 		<h2 id="3" style="padding-top:20px"> SEMANTIC SCENE MATCHING </h2>
 
-		<p>In order to implement a perfect image completion and avoid long searching time, we need to find a group of candidate images that match the scenes in input image semantically. To find the semantically similar images, we used the GIST descriptor to model the images. GIST descriptor is described in Oliva et al. 2001 paper <a href="http://cvcl.mit.edu/Papers/IJCV01-Oliva-Torralba.pdf" target="_blank">	
+		<p>In order to implement a perfect image completion and avoid long searching time, we need to find a group of candidate images that match the scenes in input image semantically. To find the semantically similar images, we used the GIST descriptor to model the images. GIST descriptor is described in Oliva et al. 2001 paper <a href="http://cvcl.mit.edu/Papers/IJCV01-Oliva-Torralba.pdf" target="_blank">
 			Modeling the shape of the scene: a holistic representation of the spatial envelope</a>. <code>GIST</code> is a low dimensional representation of an image, where some perceptual dimensions such as openness, roughness, expansion are considered. Images with scenes in the same categories will get close GIST descriptor.</p>
 
 		<p>We use a Python library called <a href="https://github.com/tuttieee/lear-gist-python" target="_blank">Lear GIST python</a>, which implements the GIST descriptor in the paper.</p>
-<!-- 
+<!--
 		<p>Here are some code from MATLAB version of GIST<br>
 			<b>Computing the GIST descriptor</b><br>
 			<code>
@@ -305,6 +305,26 @@
 			<img src="gist_res/test1 copy/2005_10_3_33.jpg" alt="output"/>
 			<img src="gist_res/test1 copy/2005_3_37_6.jpg" alt="output"/>
 			<img src="gist_res/test1 copy/2005_7_2_20.jpg" alt="output"/>
+		</figure>
+
+		<h3> Test Result 3 </h3>
+
+		<figure>
+			<img src="gist_res/test3/input.jpg" alt="test3"/>
+			<img src="gist_res/test3/mask.jpg" alt="mask"/>
+		</figure>
+
+		<figure class="result">
+			<img src="gist_res/test3/after7.jpg" alt="output"/>
+			<img src="gist_res/test3/after5.jpg" alt="output"/>
+			<img src="gist_res/test3/after20.jpg" alt="output"/>
+			<img src="gist_res/test3/after6.jpg" alt="output"/>
+		</figure>
+		<figure class="result">
+			<img src="gist_res/test3/2008_7_7_0.jpg" alt="output"/>
+			<img src="gist_res/test3/2007_7_6_37.jpg" alt="output"/>
+			<img src="gist_res/test3/2013_9_13_59.jpg" alt="output"/>
+			<img src="gist_res/test3/2008_5_4_23.jpg" alt="output"/>
 		</figure>
 
 		<h2 id="6" style="padding-top:30px"> REFERENCE </h2>
