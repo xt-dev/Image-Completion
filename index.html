@@ -167,8 +167,7 @@
 
 		<h2 id="3" style="padding-top:20px"> SEMANTIC SCENE MATCHING </h2>
 
-		<p>In order to implement a perfect image completion and avoid long searching time, we need to find a group of candidate images that match the scenes in input image semantically. To find the semantically similar images, we used the GIST descriptor to model the images. GIST descriptor is described in Oliva et al. 2001 paper <a href="http://cvcl.mit.edu/Papers/IJCV01-Oliva-Torralba.pdf" target="_blank">
-			Modeling the shape of the scene: a holistic representation of the spatial envelope</a>. <code>GIST</code> is a low dimensional representation of an image, where some perceptual dimensions such as openness, roughness, expansion are considered. Images with scenes in the same categories will get close GIST descriptor.</p>
+		<p>In order to implement a perfect image completion and avoid long searching time, we need to find a group of candidate images that match the scenes in input image semantically. To find the semantically similar images, we used the GIST descriptor to model the images. GIST descriptor is described in Oliva et al. 2001 paper <a href="http://cvcl.mit.edu/Papers/IJCV01-Oliva-Torralba.pdf" target="_blank"> Modeling the shape of the scene: a holistic representation of the spatial envelope</a>. <code>GIST</code> is a low dimensional representation of an image, where some perceptual dimensions such as openness, roughness, expansion are considered. Images with scenes in the same categories will get close GIST descriptor.</p>
 
 		<p>We use a Python library called <a href="https://github.com/tuttieee/lear-gist-python" target="_blank">Lear GIST python</a>, which implements the GIST descriptor in the paper.</p>
 <!--
@@ -247,24 +246,18 @@
 
 		<p> We use the Poisson Blending formula to solve the blending constraints: <img src="./poissonblend_eq.png" alt="poisson blend equation"/></p><br>
 
-		
+
 		<h3> Calculate Costs and Ranks </h3>
 		<p> To calculate costs, we add up three scores: GIST distance, graph cut cost and Poisson blending cost. After writing 20 output images, storing costs and ranking from smallest to largest, we select the top 5 matches.</p>
 
-		<b> Sample Output </b> <br>
-		No. 1 2005_10_13_31.jpg: <br>
-		gistdist=0.072752<br>
-		cutcost=8.921728 <br>
-		blendcost=1.555726<br>
-
-		No. 2 2005_10_3_33.jpg: gistdist=0.056394
-		 cutcost=140.355418 blendcost=8.606997
-		No. 3 2005_11_14_38.jpg: gistdist=0.039884
-		 cutcost=35.207486 blendcost=3.811644
-		No. 4 2005_11_38_49.jpg: gistdist=0.085163
-		 cutcost=7.682632 blendcost=2.521401
-		No. 5 2005_1_4_33.jpg: gistdist=0.092792
-		 cutcost=356.132497 blendcost=6.827347
+		<b> Sample Output </b>
+		<code style="display:block;white-space:pre-wrap;">
+			No. 1 2005_10_13_31.jpg:	gistdist=0.072752	cutcost=8.921728	blendcost=1.555726
+			No. 2 2005_10_3_33.jpg:		gistdist=0.056394	cutcost=140.355418	blendcost=8.606997
+			No. 3 2005_11_14_38.jpg:	gistdist=0.039884	cutcost=35.207486	blendcost=3.811644
+			No. 4 2005_11_38_49.jpg:	gistdist=0.085163	cutcost=7.682632	blendcost=2.521401
+			No. 5 2005_1_4_33.jpg:		gistdist=0.092792	cutcost=356.132497	blendcost=6.827347
+		</code>
 
 		<h2 id="5" style="padding-top:20px"> RESULT </h2>
 
@@ -352,8 +345,11 @@
 
 		<p> James Hays, Alexei A. Efros. Scene Completion Using Millions of Photographs. ACM Transactions on Graphics (SIGGRAPH 2007). August 2007, vol. 26, No. 3. </p>
 
-		<p> Codes from <a href="http://qilezhi2.web.engr.illinois.edu/cs445/proj2/index.html"><b>Project 2</b></a> and <a href="http://qilezhi2.web.engr.illinois.edu/cs445/proj3/index.html"><b>Project 3</b></a>. </p>
+		<p> Oliva, A. & Torralba, A. International Journal of Computer Vision (2001) 42: 145. https://doi.org/10.1023/A:1011139631724 </p>
+
 		<p> <a href="https://github.com/tuttieee/lear-gist-python">GIST descriptor</a> by tuttieee from Github </p>
+
+		<p> Codes from <a href="http://qilezhi2.web.engr.illinois.edu/cs445/proj2/index.html" target="_blank"><b>Project 2</b></a> and <a href="http://qilezhi2.web.engr.illinois.edu/cs445/proj3/index.html"target="_blank"><b>Project 3</b></a>. </p>
 
 
 </body>
