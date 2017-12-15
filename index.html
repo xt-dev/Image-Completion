@@ -171,45 +171,45 @@
 			Modeling the shape of the scene: a holistic representation of the spatial envelope</a>. <code>GIST</code> is a low dimensional representation of an image, where some perceptual dimensions such as openness, roughness, expansion are considered. Images with scenes in the same categories will get close GIST descriptor.</p>
 
 		<p>We use a Python library called <a href="https://github.com/tuttieee/lear-gist-python" target="_blank">Lear GIST python</a>, which implements the GIST descriptor in the paper.</p>
-
-		<p>Here is some code from MATLAB version of GIST<br>
+<!-- 
+		<p>Here are some code from MATLAB version of GIST<br>
 			<b>Computing the GIST descriptor</b><br>
 			<code>
-				% Load image
-				img = imread('demo2.jpg');
+				% Load image<br/>
+				img = imread('demo2.jpg');<br/>
 
-				% GIST Parameters:
-				clear param
-				param.orientationsPerScale = [8 8 8 8]; % number of orientations per scale (from HF to LF)
-				param.numberBlocks = 4;
-				param.fc_prefilt = 4;
+				% GIST Parameters:<br/>
+				clear param<br/>
+				param.orientationsPerScale = [8 8 8 8]; % number of orientations per scale (from HF to LF)<br/>
+				param.numberBlocks = 4;<br/>
+				param.fc_prefilt = 4;<br/>
 
-				% Computing gist:
-				[gist, param] = LMgist(img, '', param);
+				% Computing gist:<br/>
+				[gist, param] = LMgist(img, '', param);<br/>
 			</code>
 			<b>Image similarities</b><br>
 			<code>
-				% Load images
-				img1 = imread('demo1.jpg');
-				img2 = imread('demo2.jpg');
+				% Load images<br/>
+				img1 = imread('demo1.jpg');<br/>
+				img2 = imread('demo2.jpg');<br/>
 
-				% GIST Parameters:
-				clear param
-				param.imageSize = [256 256]; % it works also with non-square images (use the most common aspect ratio in your set)
-				param.orientationsPerScale = [8 8 8 8]; % number of orientations per scale
-				param.numberBlocks = 4;
-				param.fc_prefilt = 4;
+				% GIST Parameters:<br/>
+				clear param<br/>
+				param.imageSize = [256 256]; % it works also with non-square images (use the most common aspect ratio in your set)<br/>
+				param.orientationsPerScale = [8 8 8 8]; % number of orientations per scale<br/>
+				param.numberBlocks = 4;<br/>
+				param.fc_prefilt = 4;<br/>
 
-				% Computing gist:
-				gist1 = LMgist(img1, '', param);
-				gist2 = LMgist(img2, '', param);
+				% Computing gist:<br/>
+				gist1 = LMgist(img1, '', param);<br/>
+				gist2 = LMgist(img2, '', param);<br/>
 
-				% Distance between the two images:
-				D = sum((gist1-gist2).^2)
+				% Distance between the two images:<br/>
+				D = sum((gist1-gist2).^2)<br/>
 
 			</code>
 
-		</p>
+		</p> -->
 
 		<p>First, we calculate the GIST descriptor for every image using multiprocess algorithm in our image database and store all in .npy files for fast read and write.</p>
 
