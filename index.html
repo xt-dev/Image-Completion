@@ -83,6 +83,7 @@
 			background-color: #999;
 		}
 		.navbar ul {
+			padding: 0 30px;
 			display: flex;
 			align-items: stretch;
 			/* Default */
@@ -133,17 +134,27 @@
 
 		<h2 id="1"> OVERVIEW </h2>
 
-		<p> Our project is based on Hays et al. 2008 paper <a href="http://graphics.cs.cmu.edu/projects/scene-completion/" target="_blank">Scene Completion Using Millions of Photographs</a>. We will set up a large image database, and our program will be able to patch up the holes of an input image with images both structurally and semantically similar. </p>
+		<p> Our project is based on Hays et al. 2008 paper <a href="http://graphics.cs.cmu.edu/projects/scene-completion/" target="_blank">Scene Completion Using Millions of Photographs</a>. In this project, an image database with more than four hundred thousands photos will be set up, and the algorithm will be able to patch up the holes of an input image with images both structurally and semantically similar. </p>
 
 		<h2 id="2"> DATABASE SETUP </h2>
 
-		~
+		<p>To download large sets of images online, the Flicker API was used. We selected several categorals of images based on keywords such as <i>Chicago</i>, <i>lake</i>. Since Flicker API limit to return only 400 images per API request, we handled this issus by making multiple API calls according to the date of images were uploaded. Finally, we managed to download around 450,000 images in parallel using multi-thread technique and use these images as the pool for image compeletion.
+		</p>
 
-		<p> After setting up a large image database. our program will first select best semantically matching scenes and perform traditional template matching. </p>
+		<p> After setting up a large image database. our algorithm will first select best semantically matching scenes and perform traditional template matching. </p>
 
 		<h2 id="3"> SEMANTIC SCENE MATCHING </h2>
 
-		~
+		<p>To find the semantically similar images for the input image, we used the gist descriptor to model the images. Gist descriptor is described in Oliva et al. 2001 paper <a href="http://cvcl.mit.edu/Papers/IJCV01-Oliva-Torralba.pdf" target="_blank">	
+			Modeling the shape of the scene: a holistic representation of the spatial envelope</a>. Gist is a low dimensional represenatation for a image, where some perceptual dimensions such as openness, roughness, expansion are considered. Images with scenes in the same categories will get close gist descriptor.</p>
+
+		<p>We use a python library called <a href="https://github.com/tuttieee/lear-gist-python" target="_blank">Lear gist python</a>, which implements the gist descriptor in the paper.</p>
+
+		<p>First, we calculate the gist descriptor for every images in our image database and store all in a file.</p>
+
+		<p>Second, we calculate a weighted gist descriptor for the to-be-filled image with the its mask for the hole. The gist is weighted by the proportion of valid pixels(not in the hole) in every spatial bin. </p>
+
+		<p>Finally, we calculate the L1 distance between the gist for the input image and the gists for images in the database. We pick nearest 20 images as the input images for the next step</p>
 
 		<h2 id="4"> LOCAL CONTEXT MATCHING </h2>
 
