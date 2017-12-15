@@ -154,18 +154,18 @@
 
 		<p style="text-align:center"> Author: Xilun Jin (xjin12), Xin Wen (xinwen5), Xintong Wu (xwu68), Qile Zhi (qilezhi2) </p>
 
-		<h2 id="1"> OVERVIEW </h2>
+		<h2 id="1" style="padding-top:20px"> OVERVIEW </h2>
 
 		<p> Our project is based on Hays et al. 2008 paper <a href="http://graphics.cs.cmu.edu/projects/scene-completion/" target="_blank">Scene Completion Using Millions of Photographs</a>. In this project, an image database with more than four hundred thousands photos will be set up, and the algorithm will be able to patch up the holes of an input image with images both structurally and semantically similar. </p>
 
-		<h2 id="2"> DATABASE SETUP </h2>
+		<h2 id="2" style="padding-top:20px"> DATABASE SETUP </h2>
 
 		<p>To download large sets of images online, the Flicker API is used. We select several categories of images based on keywords such as <i>Chicago</i> and <i>lake</i>. Since Flicker API limit to return only 400 images per API request, we handle this issue by making multiple API calls according to the date of images were uploaded. During the downloading process, we notice that with such large amount of data, it need more than half a month to download all the images. To boost the download speed, we design and implement a multithread downloader in Python. Also, to avoid having invalid or useless images, we prune out all the photos smaller than 800*600px or have an edge larger than 10000 px. Finally, we managed to download around 450,000 images in parallel within 30 hours and used these images as the pool for image completion which will be discussed in following sections.
 		</p>
 
 		<p> After setting up a large image database. our algorithm will first select best semantically matching scenes and perform traditional template matching. </p>
 
-		<h2 id="3"> SEMANTIC SCENE MATCHING </h2>
+		<h2 id="3" style="padding-top:20px"> SEMANTIC SCENE MATCHING </h2>
 
 		<p>In order to implement a perfect image completion and avoid long searching time, we need to find a group of candidate images that match the scenes in input image semantically. To find the semantically similar images, we used the GIST descriptor to model the images. GIST descriptor is described in Oliva et al. 2001 paper <a href="http://cvcl.mit.edu/Papers/IJCV01-Oliva-Torralba.pdf" target="_blank">	
 			Modeling the shape of the scene: a holistic representation of the spatial envelope</a>. <code>GIST</code> is a low dimensional representation of an image, where some perceptual dimensions such as openness, roughness, expansion are considered. Images with scenes in the same categories will get close GIST descriptor.</p>
@@ -217,7 +217,7 @@
 
 		<p>Finally, we calculate the L1 distance between the GIST for the input image and the GIST for images in the database. We also calculate the SSD (Sum of Square Distance) between the input image and images in the database. Then we assign weights to these two attributes and pick 20 images that have smallest values as the input images for the next step</p>
 
-		<h2 id="4"> LOCAL CONTEXT MATCHING </h2>
+		<h2 id="4" style="padding-top:20px"> LOCAL CONTEXT MATCHING </h2>
 
 		<p> We now have 20 semantically nearest scenes, and we can use our local template matching algorithm to find the best matchings. We further divide the steps into two: Seam Finding and Poisson Blending, inspired by previous <b>Project 2</b> and <b>Project 3</b>. </p>
 
@@ -245,7 +245,7 @@
 
 		<p> After writing 20 output images and storing costs, we select the top 5 matches. </p>
 
-		<h2 id="5"> RESULT </h2>
+		<h2 id="5" style="padding-top:20px"> RESULT </h2>
 
 		<h3> Test Result 1 </h3>
 
