@@ -20,18 +20,29 @@
 			font-weight: 600;
 		}
 		img {
-			max-width: 100%;
-			max-height: 300px;
+			width: 50%;
 			display: block;
+			clear: none;
+			float: left;
 		}
-		img:hover {
-			opacity: 0.5;
+		.result img:hover {
+			/*opacity: 0.5;*/
+			position: relative;
+	    /*top: -25px;*/
+	    /*left: -35px;*/
+	    width: 75%;
+	    height: auto;
+	    display: block;
+	    z-index: 1;
+		}
+		.result img {
+			width: 25%;
 		}
 		figure {
-			float: left;
 			clear: none;
-			margin: 5px;
-			background-color: #f9f9f9;
+			margin: auto;
+			display: block;
+			width: auto;
 		}
 		figcaption {
 			text-align: center;
@@ -43,10 +54,11 @@
 			border-radius: 3px;
 			font-size: .9em;
 		}
-		.figureclass {
-			clear: both;
+		.result {
+			clear: none;
+			float: left;
 			display: block;
-			margin: 10px;
+			margin: auto;
 		}
 		a {
 			color: black;
@@ -162,17 +174,17 @@
 
 		<p> We iterate the following process on each selected images: </p>
 
-		<h3> Setup input image  </h3>
+		<h3> Setup Input Mmage </h3>
 
-		When the program start, we can manually select the area to "erase", or input the incomplete image and its mask. 
+		When the program start, we can manually select the area to "erase", or input the incomplete image and its mask.
 
 		<h3> Cut Seam Finding </h3>
 
 		<p> To find the minimum cost path around the irregular border, we first find the smallest rectangle containing the inrregular hole, then add 80 to each four borders to get a larger rectangle as well and minus 80 to each borders to get a smaller rectangles. We regard the difference between the large and small rectangles (the width of the border is <code>160</code> in our case) as local context, i.e., the overlapping region of the existing and sampled patch. </p>
 
-		<p> Take the top <code>160 * width</code> region as example. We use the idea of <code>buildErrpatch</code> in <b>Project 2</b>, but add some modifications to satisfy the need of irregular shape. First, we calculate the SSD of two images on <code>L*a*b</code> color space instead of RGB color space. Since the region we need to cut contains part of holes, we changed the overlap region of hole and cut to <code>Inf</code> so that it won't be marked as cut edge. Then, we use <code>cut.m</code> to find the minimum cost path from the left to the right side of the patch, which defines a binary mask for the whole local context region. </p>
+		<p> Take the top <code>160 * width</code> region as example. We use the idea of <code>buildErrpatch</code> in <b>Project 2</b>, but add some modifications to satisfy the need of irregular shape. First, we calculate the SSD of two images on <code>L*a*b</code> color space instead of RGB color space. Since the region we need to cut contains part of holes, we changed the overlap region of hole and cut to <code>Inf</code> so that it won't be marked as cut edge. Then, we use <code>cut</code> to find the minimum cost path from the left to the right side of the patch, which defines a binary mask for the whole local context region. </p>
 
-		<p> Rather than repeating process above once, we use it for four edges (top, bottom, left, right). Note that to find the cut for left and right region, we need to transpose the region first so that we can find the cutting path from top to the bottom side in the original region. We store the mininim cost for each time, and let the sum to be the total cost. Find the intersection of four masks. </p>
+		<p> Rather than repeating process above once, we use it for four edges (top, bottom, left, right). Note that to find the cut for left and right region, we need to transpose the region first so that we can find the cutting path from top to the bottom side in the original region. We store the mininim cost for each time, and let the sum to be the total cut cost. Find the intersection of four masks. </p>
 
 		<h3> Poisson Blending </h3>
 
@@ -180,15 +192,76 @@
 
 		<p> Note that different from <b>Project 3</b> which allows the user to select mask region, our mask is computed by the cut, so there might be isolated pixels or regions with wierd border. Since Poission Blending is based on neighboring regions, before outputing mask in the process above, we smooth the mask a little bit. </p>
 
-		<p> After writing 20 output images and storing costs, we select the top 5 matches and output the indices as well as costs. </p>
+		<p> After writing 20 output images and storing costs, we select the top 5 matches. </p>
 
 		<h2 id="5"> RESULT </h2>
 
-		~
+		<h3> Test Result 1 </h3>
+
+		<figure>
+			<img src="gist_res/test2/input.jpg" alt="test2"/>
+			<img src="gist_res/test2/mask.jpg" alt="mask"/>
+		</figure>
+
+		<figure class="result">
+			<img src="gist_res/test2/after13.jpg" alt="output"/>
+			<img src="gist_res/test2/after9.jpg" alt="output"/>
+			<img src="gist_res/test2/after6.jpg" alt="output"/>
+			<img src="gist_res/test2/after14.jpg" alt="output"/>
+		</figure>
+		<figure class="result">
+			<img src="gist_res/test2/2005_4_8_23.jpg" alt="output"/>
+			<img src="gist_res/test2/2005_3_3_0.jpg" alt="output"/>
+			<img src="gist_res/test2/2005_11_34_20.jpg" alt="output"/>
+			<img src="gist_res/test2/2005_6_10_21.jpg" alt="output"/>
+		</figure>
+
+		<h3> Test Result 2 </h3>
+
+		<figure>
+			<img src="gist_res/test1/input.jpg" alt="test1"/>
+			<img src="gist_res/test1/mask.jpg" alt="mask"/>
+		</figure>
+
+		<figure class="result">
+			<img src="gist_res/test1/after15.jpg" alt="output"/>
+			<img src="gist_res/test1/after2.jpg" alt="output"/>
+			<img src="gist_res/test1/after8.jpg" alt="output"/>
+			<img src="gist_res/test1/after9.jpg" alt="output"/>
+		</figure>
+		<figure class="result">
+			<img src="gist_res/test1/2005_7_12_2.jpg" alt="output"/>
+			<img src="gist_res/test1/2005_10_3_33.jpg" alt="output"/>
+			<img src="gist_res/test1/2005_3_37_6.jpg" alt="output"/>
+			<img src="gist_res/test1/2005_4_8_11.jpg" alt="output"/>
+		</figure>
+
+		<h3> Test Result 2.2 </h3>
+
+		<figure>
+			<img src="gist_res/test1 copy/input.jpg" alt="test1"/>
+			<img src="gist_res/test1 copy/mask.jpg" alt="mask"/>
+		</figure>
+
+		<figure class="result">
+			<img src="gist_res/test1 copy/after5.jpg" alt="output"/>
+			<img src="gist_res/test1 copy/after2.jpg" alt="output"/>
+			<img src="gist_res/test1 copy/after8.jpg" alt="output"/>
+			<img src="gist_res/test1 copy/after17.jpg" alt="output"/>
+		</figure>
+		<figure class="result">
+			<img src="gist_res/test1 copy/2005_1_4_33.jpg" alt="output"/>
+			<img src="gist_res/test1 copy/2005_10_3_33.jpg" alt="output"/>
+			<img src="gist_res/test1 copy/2005_3_37_6.jpg" alt="output"/>
+			<img src="gist_res/test1 copy/2005_7_2_20.jpg" alt="output"/>
+		</figure>
 
 		<h2 id="6"> REFERENCE </h2>
 
 		<p> James Hays, Alexei A. Efros. Scene Completion Using Millions of Photographs. ACM Transactions on Graphics (SIGGRAPH 2007). August 2007, vol. 26, No. 3. </p>
+
+		<p> Codes from <b>Project 2</b> and <b>Project 3</b>. </p>
+
 
 </body>
 
