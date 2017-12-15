@@ -27,16 +27,22 @@
 		}
 		.result img:hover {
 			/*opacity: 0.5;*/
-			position: relative;
+			/* position: relative; */
+			-webkit-transform: scale(1.7);
+			-ms-transform: scale(1.7);
+			transform: scale(1.7);
+			box-shadow: 0 14px 28px rgba(0,0,0,0.5), 0 10px 10px rgba(0,0,0,0.22);
+
 	    /*top: -25px;*/
 	    /*left: -35px;*/
-	    width: 75%;
+	    /* width: 75%; */
 	    height: auto;
 	    display: block;
 	    z-index: 1;
 		}
 		.result img {
 			width: 25%;
+			transition: all .5s ease-in-out;
 		}
 		figure {
 			clear: none;
@@ -78,9 +84,12 @@
 			/* Set the navbar to fixed position */
 			top: 0;
 			/* Position the navbar at the top of the page */
-			width: 100vw;
+			/* width: 100vw; */
+			left: 0;
+			right: 0;
 			/* Full width */
 			margin: 0px;
+			padding: 0 20px;
 		}
 		/* Links inside the navbar */
 		.navbar a {
@@ -140,9 +149,10 @@
 
 	<div class="main" id="0">
 
-		<h1 align='center'> CS 445 Final Project Image Completion </h1>
+		<h1 align='center' style="font-size:40px;padding-top:20px"> Scene Completion With Large-scale Image Data Set </h1>
+		<h1 align='center' style="font-size:30px"> CS 445 Final Project Image Completion </h1>
 
-		<p style="text-align:center"> Group Member: Xilun Jin (xjin12), Xin Wen (xinwen5), Xintong Wu (xwu68), Qile Zhi (qilezhi2) </p>
+		<p style="text-align:center"> Author: Xilun Jin (xjin12), Xin Wen (xinwen5), Xintong Wu (xwu68), Qile Zhi (qilezhi2) </p>
 
 		<h2 id="1"> OVERVIEW </h2>
 
