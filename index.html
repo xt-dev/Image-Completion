@@ -150,23 +150,62 @@
 
 		<h2 id="2"> DATABASE SETUP </h2>
 
-		<p>To download large sets of images online, the Flicker API is used. We selecte several categorals of images based on keywords such as <i>Chicago</i> and <i>lake</i>. Since Flicker API limit to return only 400 images per API request, we handle this issus by making multiple API calls according to the date of images were uploaded. During the downloading process, we notice that with such large amount of data, it need more than half a month to download all the images. To boost the download speed, we designe and implemente a multithread downloader in Python. Also, to avoid having invalid or useless images, we prune out all the photos smaller than 800*600px or have an edge larger than 10000 px. Finally, we managed to download around 450,000 images in parallel within 30 hours and used these images as the pool for image compeletion which will be discussed in following sections.
+		<p>To download large sets of images online, the Flicker API is used. We select several categories of images based on keywords such as <i>Chicago</i> and <i>lake</i>. Since Flicker API limit to return only 400 images per API request, we handle this issue by making multiple API calls according to the date of images were uploaded. During the downloading process, we notice that with such large amount of data, it need more than half a month to download all the images. To boost the download speed, we design and implement a multithread downloader in Python. Also, to avoid having invalid or useless images, we prune out all the photos smaller than 800*600px or have an edge larger than 10000 px. Finally, we managed to download around 450,000 images in parallel within 30 hours and used these images as the pool for image completion which will be discussed in following sections.
 		</p>
 
 		<p> After setting up a large image database. our algorithm will first select best semantically matching scenes and perform traditional template matching. </p>
 
 		<h2 id="3"> SEMANTIC SCENE MATCHING </h2>
 
-		<p>In order to implement a perfect image compeletion and avoid long searching time, we need to find a group of candicate images that match the scenes in input image semantically. To find the semantically similar images, we used the gist descriptor to model the images. Gist descriptor is described in Oliva et al. 2001 paper <a href="http://cvcl.mit.edu/Papers/IJCV01-Oliva-Torralba.pdf" target="_blank">	
-			Modeling the shape of the scene: a holistic representation of the spatial envelope</a>. Gist is a low dimensional represenatation for a image, where some perceptual dimensions such as openness, roughness, expansion are considered. Images with scenes in the same categories will get close gist descriptor.</p>
+		<p>In order to implement a perfect image completion and avoid long searching time, we need to find a group of candidate images that match the scenes in input image semantically. To find the semantically similar images, we used the GIST descriptor to model the images. GIST descriptor is described in Oliva et al. 2001 paper <a href="http://cvcl.mit.edu/Papers/IJCV01-Oliva-Torralba.pdf" target="_blank">	
+			Modeling the shape of the scene: a holistic representation of the spatial envelope</a>. <code>GIST</code> is a low dimensional representation of an image, where some perceptual dimensions such as openness, roughness, expansion are considered. Images with scenes in the same categories will get close GIST descriptor.</p>
 
-		<p>We use a Python library called <a href="https://github.com/tuttieee/lear-gist-python" target="_blank">Lear gist python</a>, which implements the gist descriptor in the paper.</p>
+		<p>We use a Python library called <a href="https://github.com/tuttieee/lear-gist-python" target="_blank">Lear GIST python</a>, which implements the GIST descriptor in the paper.</p>
 
-		<p>First, we calculate the gist descriptor for every images using multiprocess algorithm in our image database and store all in .npy files for fast read and write.</p>
+		<p>Here is some code from MATLAB version of GIST<br>
+			<b>Computing the GIST descriptor</b><br>
+			<code>
+				% Load image
+				img = imread('demo2.jpg');
 
-		<p>Second, we calculate a weighted gist descriptor for the to-be-filled image with the its mask for the hole. The gist is weighted by the proportion of valid pixels(not in the hole) in every spatial bin. </p>
+				% GIST Parameters:
+				clear param
+				param.orientationsPerScale = [8 8 8 8]; % number of orientations per scale (from HF to LF)
+				param.numberBlocks = 4;
+				param.fc_prefilt = 4;
 
-		<p>Finally, we calculate the L1 distance between the gist for the input image and the gists for images in the database. Plus the SSD (Sum of Square Distance) between the input image and images in the database. Then we assign weights to these two attributes and pick 20 images that has the smallest value as the input images for the next step</p>
+				% Computing gist:
+				[gist, param] = LMgist(img, '', param);
+			</code>
+			<b>Image similarities</b><br>
+			<code>
+				% Load images
+				img1 = imread('demo1.jpg');
+				img2 = imread('demo2.jpg');
+
+				% GIST Parameters:
+				clear param
+				param.imageSize = [256 256]; % it works also with non-square images (use the most common aspect ratio in your set)
+				param.orientationsPerScale = [8 8 8 8]; % number of orientations per scale
+				param.numberBlocks = 4;
+				param.fc_prefilt = 4;
+
+				% Computing gist:
+				gist1 = LMgist(img1, '', param);
+				gist2 = LMgist(img2, '', param);
+
+				% Distance between the two images:
+				D = sum((gist1-gist2).^2)
+
+			</code>
+
+		</p>
+
+		<p>First, we calculate the GIST descriptor for every image using multiprocess algorithm in our image database and store all in .npy files for fast read and write.</p>
+
+		<p>Second, we calculate a weighted GIST descriptor for the to-be-filled image with its mask for the hole. The GIST is weighted by the proportion of valid pixels(not in the hole) in every spatial bin. </p>
+
+		<p>Finally, we calculate the L1 distance between the GIST for the input image and the GIST for images in the database. We also calculate the SSD (Sum of Square Distance) between the input image and images in the database. Then we assign weights to these two attributes and pick 20 images that have smallest values as the input images for the next step</p>
 
 		<h2 id="4"> LOCAL CONTEXT MATCHING </h2>
 
@@ -184,13 +223,15 @@
 
 		<p> Take the top <code>160 * width</code> region as example. We use the idea of <code>buildErrpatch</code> in <b>Project 2</b>, but add some modifications to satisfy the need of irregular shape. First, we calculate the SSD of two images on <code>L*a*b</code> color space instead of RGB color space. Since the region we need to cut contains part of holes, we changed the overlap region of hole and cut to <code>Inf</code> so that it won't be marked as cut edge. Then, we use <code>cut</code> to find the minimum cost path from the left to the right side of the patch, which defines a binary mask for the whole local context region. </p>
 
-		<p> Rather than repeating process above once, we use it for four edges (top, bottom, left, right). Note that to find the cut for left and right region, we need to transpose the region first so that we can find the cutting path from top to the bottom side in the original region. We store the mininim cost for each time, and let the sum to be the total cut cost. Find the intersection of four masks. </p>
+		<p> We apply the above process to all four edges (top, bottom, left, right). Note that to find the cut for left and right region, we need to transpose the region first so that we can find the cutting path from top to the bottom side in the original region. We store the minimum cost for each time, and let the sum to be the total cut cost. Find the intersection of four masks. </p>
 
 		<h3> Poisson Blending </h3>
 
-		<p> After we get the mask, we use the standard <code>poissonBlend</code> inspired by <b>Project 3</b> on the whole image region to compose the image. </p>
+		<p> After we get the mask, we use the standard <code>poissonBlend</code> by <b>Project 3</b> on the whole image region to compose the image. </p>
 
 		<p> Note that different from <b>Project 3</b> which allows the user to select mask region, our mask is computed by the cut, so there might be isolated pixels or regions with wierd border. Since Poission Blending is based on neighboring regions, before outputing mask in the process above, we smooth the mask a little bit. </p>
+
+		<p> We use the Poisson Blending formula to solve the blending constraints: <img src="./poissonblend_eq.png" alt="poisson blend equation"/></p>
 
 		<p> After writing 20 output images and storing costs, we select the top 5 matches. </p>
 
@@ -261,6 +302,7 @@
 		<p> James Hays, Alexei A. Efros. Scene Completion Using Millions of Photographs. ACM Transactions on Graphics (SIGGRAPH 2007). August 2007, vol. 26, No. 3. </p>
 
 		<p> Codes from <b>Project 2</b> and <b>Project 3</b>. </p>
+		<p> GIST descriptor from OpenCV library </p>
 
 
 </body>
