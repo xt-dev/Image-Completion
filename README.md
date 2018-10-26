@@ -1,6 +1,6 @@
 # Scene Completion With Large-scale Image Data Set
 
-[_Final Project for CS445 Computational Photography_](http://xwu68.web.engr.illinois.edu/cs445/project/index.html)
+[Project Report](http://xwu68.web.engr.illinois.edu/cs445/project/index.html)
 
 ## OVERVIEW
 
